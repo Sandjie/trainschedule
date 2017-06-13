@@ -18,7 +18,7 @@
 
 
 <!-- <div class="col-lg-12">
- --><table class="table table-striped">
+ --><table class="table">
  		<thead>
  			<tr>
  			<th>Name</th>
@@ -55,14 +55,14 @@
                 <input class="form-control" id="destination" type="text">
               </div>
               <div class="form-group">
-                <label for="first-train">First Train: (HH:mm ; military time)</label>
-                <input class="form-control" id="first-train" type="number">
+                <label for="first-train">Next Arrival: (HH:mm ; military time)</label>
+                <input class="form-control" id="nextArrival" type="number">
               </div>
               <div class="form-group">
                 <label for="frequency">Frequency:</label>
                 <textarea class="form-control" id="frequency"></textarea>
               </div>
-              <button class="btn btn-default" id="add-user" type="submit">Submit</button>
+              <button class="btn btn-default" id="add-train" type="submit">Submit</button>
             </form>
           </div>
         </div>
@@ -93,6 +93,75 @@
     };
 
     firebase.initializeApp(config);
+
+    // Create a variable to reference the database
+    var myTrain = firebase.database();
+
+    // Initial Values
+    var trainName= "";
+    var destination = "";
+    var nextArrival = 0;
+    var frequency = "";
+
+    // Capture Button Click
+    $("#add-train").on("click", function() {
+      // Don't refresh the page!
+      event.preventDefault();
+
+      // YOUR TASK!!!
+      // Code in the logic for storing and retrieving the most recent user.
+      // Don't forget to provide initial data to your Firebase database.
+      trainName = $("#name-input").val().trim();
+      destination = $("#destination").val().trim();
+      nextArrival= $("#nextArrival").val().trim();
+      frequency = $("#frequency").val().trim();
+
+      var newTrain = {
+        trainName: trainName,
+        destination: destination,
+        nextArrival: nextArrival,
+        frequency: frequency
+      };
+
+      myTrain.ref().set(newTrain);
+
+    });
+
+    // Firebase watcher + initial loader HINT: .on("value")
+    myTrain.ref().on("value", function(snapshot) {
+
+
+
+      // Log everything that's coming out of snapshot
+      console.log(snapshot.val());
+      console.log(snapshot.val().trainName);
+      console.log(snapshot.val().destination);
+      console.log(snapshot.val().nextArrival);
+      console.log(snapshot.val().frequency);
+
+      alert("badabing train added");
+
+      // Change the HTML to reflect
+      $("#name-display").html(snapshot.val().name);
+      $("#destination").html(snapshot.val().email);
+      $("#nextArrival").html(snapshot.val().age);
+      $("#frequency").html(snapshot.val().comment);
+
+	      $(".table > tbody").append("<tr><td>" + trainName + "</td><td>" + destination + "</td><td>"
+	  + frequency + "</td><td>" + nextArrival + "</td><td>" + frequency + "</td></tr>");
+
+      // Handle the errors
+    }, function(errorObject) {
+      console.log("Errors handled: " + errorObject.code);
+    });
+
+   
+  </script>
+
+</body>
+
+</html>
+
 
 
 
